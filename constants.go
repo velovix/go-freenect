@@ -69,3 +69,13 @@ const (
 	LEDColorBlinkGreen     = LEDColor(C.LED_BLINK_GREEN)
 	LEDColorBlinkRedYellow = LEDColor(C.LED_BLINK_RED_YELLOW)
 )
+
+// TiltStatus represents a tilt motor status code.
+type TiltStatus int
+
+// Constants representing tilt motor status codes.
+const (
+	TiltStatusStopped = TiltStatus(C.TILT_STATUS_STOPPED)
+	TiltStatusLimit   = TiltStatus(C.TILT_STATUS_LIMIT)
+	TiltStatusMoving  = TiltStatus(C.TILT_STATUS_MOVING)
+)

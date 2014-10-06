@@ -159,15 +159,17 @@ func (device *Device) SetLED(color LEDColor) error {
 	return nil
 }
 
-// GetTilt returns the current angle the Kinect is tilted.
-func (device *Device) GetTilt() float64 {
+// GetTiltAngle returns the current angle the Kinect is tilted.
+func (device *Device) GetTiltAngle() float64 {
 
-	return 0
+	tiltState := C.freenect_get_tilt_state(device.device)
+
+	return float64(C.freenect_get_tilt_degs(tiltState))
 }
 
-// SetTilt sets the angle the kinect is tilted. Note that the device may not be
-// done tilting when this function returns.
-func (device *Device) SetTilt(degrees float64) error {
+// SetTiltAngle sets the angle the kinect is tilted. Note that the device may
+// not be done tilting when this function returns.
+func (device *Device) SetTiltAngle(degrees float64) error {
 
 	errCode := C.freenect_set_tilt_degs(device.device, C.double(degrees))
 
@@ -176,4 +178,24 @@ func (device *Device) SetTilt(degrees float64) error {
 	}
 
 	return nil
+}
+
+// GetAccelerometerState returns the axis-based gravity adjusted accelerometer
+// state in the form of x-axis, y-axis, and z-axis states.
+func (device *Device) GetAccelerometerState() (float64, float64, float64) {
+
+	tiltState := C.freenect_get_tilt_state(device.device)
+
+	var x, y, z C.double
+	C.freenect_get_mks_accel(tiltState, &x, &y, &z)
+
+	return float64(x), float64(y), float64(z)
+}
+
+// GetTiltStatus returns the current status of the tilting motor.
+func (device *Device) GetTiltStatus() TiltStatus {
+
+	tiltState := C.freenect_get_tilt_state(device.device)
+
+	return TiltStatus(C.freenect_get_tilt_status(tiltState))
 }
