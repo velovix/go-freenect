@@ -14,13 +14,19 @@ import "fmt"
 
 var devices map[*C.freenect_device]*Device
 
+// Device is an object the represents a physical Kinect device.
 type Device struct {
 	device        *C.freenect_device
 	depthCallback DepthCallback
 	videoCallback VideoCallback
 }
 
+// DepthCallback is a function that a Device object can call when a new depth
+// frame is available.
 type DepthCallback func(device *Device, depth []uint16, timestamp uint32)
+
+// VideoCallback is a function that a Device object can call when a new video
+// frame is available.
 type VideoCallback func(device *Device, video []byte, timestamp uint32)
 
 //export depthCallbackInterceptor
@@ -49,11 +55,14 @@ func videoCallbackInterceptor(device *C.freenect_device, video *byte, timestamp 
 	}
 }
 
+// Destroy frees the Device object memory.
 func (device *Device) Destroy() {
 
 	C.freenect_close_device(device.device)
 }
 
+// SetDepthCallback sets the callback function that will be called when a new
+// depth frame is available.
 func (device *Device) SetDepthCallback(callback DepthCallback) {
 
 	if _, ok := devices[device.device]; !ok {
@@ -64,6 +73,8 @@ func (device *Device) SetDepthCallback(callback DepthCallback) {
 	device.depthCallback = callback
 }
 
+// SetVideoCallback sets the callback function that will be called when a new
+// video frame is available.
 func (device *Device) SetVideoCallback(callback VideoCallback) {
 
 	if _, ok := devices[device.device]; !ok {
@@ -74,6 +85,7 @@ func (device *Device) SetVideoCallback(callback VideoCallback) {
 	device.videoCallback = callback
 }
 
+// StartDepthStream begins the retrieval of depth information from the device.
 func (device *Device) StartDepthStream(resolution Resolution, format DepthFormat) error {
 
 	errCode := C.freenect_set_depth_mode(device.device,
@@ -92,6 +104,7 @@ func (device *Device) StartDepthStream(resolution Resolution, format DepthFormat
 	return nil
 }
 
+// StopDepthStream stops the retrieval of depth information from the device.
 func (device *Device) StopDepthStream() error {
 
 	errCode := C.freenect_stop_depth(device.device)
@@ -103,6 +116,7 @@ func (device *Device) StopDepthStream() error {
 	return nil
 }
 
+// StartVideoStream starts the retrieval of video information from the device.
 func (device *Device) StartVideoStream(resolution Resolution, format VideoFormat) error {
 
 	errCode := C.freenect_set_video_mode(device.device,
@@ -121,6 +135,7 @@ func (device *Device) StartVideoStream(resolution Resolution, format VideoFormat
 	return nil
 }
 
+// StopVideoStream stops the retrieval of video information from the device.
 func (device *Device) StopVideoStream() error {
 
 	errCode := C.freenect_stop_video(device.device)
@@ -132,6 +147,7 @@ func (device *Device) StopVideoStream() error {
 	return nil
 }
 
+// SetLED sets the color or pattern of the LED on the Kinect.
 func (device *Device) SetLED(color LEDColor) error {
 
 	errCode := C.freenect_set_led(device.device, C.freenect_led_options(color))
@@ -143,11 +159,14 @@ func (device *Device) SetLED(color LEDColor) error {
 	return nil
 }
 
+// GetTilt returns the current angle the Kinect is tilted.
 func (device *Device) GetTilt() float64 {
 
 	return 0
 }
 
+// SetTilt sets the angle the kinect is tilted. Note that the device may not be
+// done tilting when this function returns.
 func (device *Device) SetTilt(degrees float64) error {
 
 	errCode := C.freenect_set_tilt_degs(device.device, C.double(degrees))

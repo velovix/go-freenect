@@ -48,7 +48,7 @@ func NewContext() (Context, error) {
 	return context, nil
 }
 
-// Destory frees the Context object data.
+// Destroy frees the Context object data.
 func (context *Context) Destroy() error {
 
 	errCode := int(C.freenect_shutdown(context.context))
