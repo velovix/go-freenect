@@ -10,6 +10,8 @@ import "C"
 import "time"
 import "errors"
 import "fmt"
+import "syscall"
+import "unsafe"
 
 var contexts map[*C.freenect_context]*Context
 
@@ -96,7 +98,8 @@ func (context *Context) ProcessEvents(timeout time.Duration) error {
 	if timeout == 0 {
 		errCode = int(C.freenect_process_events(context.context))
 	} else {
-		cDuration := &C.struct_timeval{tv_sec: 0, tv_usec: C.__suseconds_t(timeout)}
+		timeval := syscall.NsecToTimeval(timeout.Nanoseconds())
+		cDuration := (*C.struct_timeval)(unsafe.Pointer(&timeval))
 		errCode = int(C.freenect_process_events_timeout(context.context, cDuration))
 	}
 
