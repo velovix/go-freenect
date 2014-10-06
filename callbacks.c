@@ -1,5 +1,5 @@
 #include "_cgo_export.h"
-#include <libfreenect/libfreenect.h>
+#include <libfreenect.h>
 
 void logCallback(freenect_context *context, freenect_loglevel level, char *message) {
 
