@@ -1,7 +1,7 @@
 package freenect
 
 /*
-#include <libfreenect/libfreenect.h>
+#include <libfreenect.h>
 */
 import "C"
 

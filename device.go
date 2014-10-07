@@ -1,7 +1,7 @@
 package freenect
 
 /*
-#include <libfreenect/libfreenect.h>
+#include <libfreenect.h>
 
 extern void depthCallback(freenect_device *device, void *depth, uint32_t timestamp);
 extern void videoCallback(freenect_device *device, void *video, uint32_t timestamp);

@@ -1,8 +1,9 @@
 package freenect
 
 /*
+#cgo CFLAGS: -I/usr/local/include/libfreenect -I/usr/include/libfreenect
 #cgo LDFLAGS: -lfreenect
-#include <libfreenect/libfreenect.h>
+#include <libfreenect.h>
 */
 import "C"
 
