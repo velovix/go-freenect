@@ -1,3 +1,4 @@
+// Package freenect implements a Go binding for the libfreenect library.
 package freenect
 
 /*
