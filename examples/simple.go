@@ -13,12 +13,18 @@ import (
 var (
 	context  freenect.Context
 	kinect   freenect.Device
-	frameCnt int
+	depthFrameCnt int
+	videoFrameCnt int
 )
 
 func onDepthFrame(device *freenect.Device, depth []uint16, timestamp uint32) {
 
-	frameCnt++
+	depthFrameCnt++
+}
+
+func onVideoFrame(device *freenect.Device, video []byte, timestamp uint32) {
+
+	videoFrameCnt++
 }
 
 func init() {
@@ -49,6 +55,18 @@ func init() {
 	// Set the depth callback. This function is called whenever a depth frame is retrieved
 	kinect.SetDepthCallback(onDepthFrame)
 
+	// Set the video callback. This function is called whenever a video frame is retrieved
+	kinect.SetVideoCallback(onVideoFrame)
+
+	// Note: If both modes are used, start video stream first!
+
+	// Start the video camera and begin streaming
+	err = kinect.StartVideoStream(freenect.ResolutionMedium, freenect.VideoFormatRGB)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	// Start the depth camera and begin streaming
 	err = kinect.StartDepthStream(freenect.ResolutionMedium, freenect.DepthFormatMM)
 	if err != nil {
@@ -71,7 +89,7 @@ func main() {
 		}
 	}
 
-	fmt.Println("Processed", frameCnt, "frames in 10 seconds.")
+	fmt.Println("Processed", depthFrameCnt, "depth frames and", videoFrameCnt, "video frames in 10 seconds.")
 
 	// Clean up objects
 	kinect.StopDepthStream()
